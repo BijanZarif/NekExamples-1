@@ -207,11 +207,50 @@ class ThreeDBox(NekTestCase):
 #  axi: axi.rea
 ###############################################################################
 
+
 class Axi(NekTestCase):
     example_subdir  = 'axi'
-    case_name        = 'axi'
+    case_name       = 'axi'
 
     def setUp(self):
+
+        # Default SIZE parameters. Can be overridden in test cases
+        self.size_params = dict(
+            ldim      = '2',
+            lx1       = '6',
+            lxd       = '9',
+            lx2       = 'lx1-2',
+            lx1m      = 'lx1',
+            lelg      = '300',
+            lp        = '8',
+            lelt      = '80',
+            ldimt     = '4',
+            lelx      = '20',
+            lely      = '60',
+            lelz      = '1',
+            ax1       = 'lx1',
+            ax2       = 'lx2',
+            lbx1      = '1',
+            lbx2      = '1',
+            lbelt     = '1',
+            lpx1      = '1',
+            lpx2      = '1',
+            lpelt     = '1',
+            lpert     = '1',
+            lelecmt   = '',
+            toteq     = '',
+            mxprev    = '80',
+            lgmres    = '40',
+            lorder    = '3',
+            lhis      = '100',
+            maxobj    = '4',
+            maxmbr    = 'lelt*6',
+            nsessmax  = '',
+            nmaxl     = '',
+            nfldmax   = '',
+            nmaxcom   = '',
+        )
+
         self.build_tools(['genbox', 'genmap'])
         self.run_genbox()
         self.mvn('box', self.__class__.case_name)
@@ -219,21 +258,23 @@ class Axi(NekTestCase):
 
     @pn_pn_serial
     def test_PnPn_Serial(self):
-        self.config_size(lx2='lx1', ly2='ly1', lz2='lz1')
+        self.size_params['lx2']='lx1'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
         pres = self.get_value_from_log('PRES', column=-4)
         self.assertAlmostEqualDelayed(pres, target_val=0., delta=76., label='PRES')
 
-        solver_time = self.get_value_from_log('total solver time', column=-2)
-        self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=2, label='total solver time')
+        # solver_time = self.get_value_from_log('total solver time', column=-2)
+        # self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=2, label='total solver time')
 
         self.assertDelayedFailures()
 
     @pn_pn_parallel
     def test_PnPn_Parallel(self):
-        self.config_size(lx2='lx1', ly2='ly1', lz2='lz1')
+        self.size_params['lx2']='lx1'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
@@ -244,21 +285,23 @@ class Axi(NekTestCase):
 
     @pn_pn_2_serial
     def test_PnPn2_Serial(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2']='lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
         u_press = self.get_value_from_log('U-Press', column=-5)
         self.assertAlmostEqualDelayed(u_press, target_val=0., delta=104., label='U-Press')
 
-        solver_time = self.get_value_from_log('total solver time', column=-2)
-        self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=4, label='total solver time')
+        # solver_time = self.get_value_from_log('total solver time', column=-2)
+        # self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=4, label='total solver time')
 
         self.assertDelayedFailures()
 
     @pn_pn_2_parallel
     def test_PnPn2_Parallel(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2']='lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
