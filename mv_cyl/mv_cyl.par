@@ -2,10 +2,10 @@
 # nek parameter file
 #
 [GENERAL] 
-startFrom = #restart.fld 
-stopAt = endTime #nSteps
+#startFrom = restart.fld 
+stopAt = nSteps
 endTime = 50
-numSteps = 10
+numSteps = 1000
 
 dt = 1e-03
 timeStepper = bdf #bdf #char #steady
@@ -21,7 +21,8 @@ userParam01 = 1
 
 [PROBLEMTYPE]
 lowMachNumber = yes 
-userProperties = yes
+variableProperties = yes
+dp0dt = yes
 
 [MESH]
 motion = yes 
@@ -37,5 +38,9 @@ residualProj = no
 
 [TEMPERATURE]
 solver = cvode
-relativeTol = 1e-08
-absoluteTol = 1e-10
+absoluteTol = 1e-12
+
+[CVODE]
+relativeTol = 1e-12
+stiff = no
+dtmax = 1e-2
