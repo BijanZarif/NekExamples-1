@@ -2040,6 +2040,7 @@ class KovStState(NekTestCase):
 
     def tearDown(self):
         self.move_logs()
+
 ####################################################################
 #  lowMach_test; lowMach_test.rea
 ####################################################################
@@ -3333,12 +3334,48 @@ class VarVis(NekTestCase):
     case_name = 'st2'
 
     def setUp(self):
+        self.size_params = dict(
+            ldim      = '2',
+            lx1       = '8',
+            lxd       = '12',
+            lx2       = 'lx1-2',
+            lx1m      = 'lx1',
+            lelg      = '4100',
+            lp        = '512',
+            lelt      = '300',
+            ldimt     = '2',
+            lelx      = '20',
+            lely      = '20',
+            lelz      = '1',
+            ax1       = 'lx1',
+            ax2       = 'lx2',
+            lbx1      = '1',
+            lbx2      = '1',
+            lbelt     = '1',
+            lpx1      = '1',
+            lpx2      = '1',
+            lpelt     = '1',
+            lpert     = '1',
+            lelecmt   = '',
+            toteq     = '',
+            mxprev    = '20',
+            lgmres    = '30',
+            lorder    = '3',
+            lhis      = '100',
+            maxobj    = '4',
+            maxmbr    = 'lelt*6',
+            nsessmax  = '',
+            nmaxl     = '',
+            nfldmax   = '',
+            nmaxcom   = '',
+        )
         self.build_tools(['genmap'])
         self.run_genmap()
 
     @pn_pn_serial
     def test_PnPn_Serial(self):
-        self.config_size(lx2='lx1', ly2='ly1', lz2='lz1')
+        self.size_params['lx2'] = 'lx1'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
@@ -3352,7 +3389,8 @@ class VarVis(NekTestCase):
 
     @pn_pn_parallel
     def test_PnPn_Parallel(self):
-        self.config_size(lx2='lx1', ly2='ly1', lz2='lz1')
+        self.size_params['lx2'] = 'lx1'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
@@ -3363,7 +3401,8 @@ class VarVis(NekTestCase):
 
     @pn_pn_2_serial
     def test_PnPn2_Serial(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2'] = 'lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
@@ -3377,7 +3416,8 @@ class VarVis(NekTestCase):
 
     @pn_pn_2_parallel
     def test_PnPn2_Parallel(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2'] = 'lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
