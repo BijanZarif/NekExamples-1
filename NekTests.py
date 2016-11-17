@@ -1972,17 +1972,54 @@ class KovStState(NekTestCase):
     case_name = 'kov_st_stokes'
 
     def setUp(self):
+        self.size_params = dict(
+            ldim      = '2',
+            lx1       = '14',
+            lxd       = '20',
+            lx2       = 'lx1-2',
+            lx1m      = '1',
+            lelg      = '500',
+            lp        = '64',
+            lelt      = '80',
+            ldimt     = '1',
+            lelx      = '1',
+            lely      = '1',
+            lelz      = '1',
+            ax1       = 'lx1',
+            ax2       = 'lx2',
+            lbx1      = '1',
+            lbx2      = '1',
+            lbelt     = '1',
+            lpx1      = '1',
+            lpx2      = '1',
+            lpelt     = '1',
+            lpert     = '1',
+            lelecmt   = '',
+            toteq     = '',
+            mxprev    = '20',
+            lgmres    = '40',
+            lorder    = '3',
+            lhis      = '100',
+            maxobj    = '4',
+            maxmbr    = 'lelt*6',
+            nsessmax  = '',
+            nmaxl     = '',
+            nfldmax   = '',
+            nmaxcom   = '',
+        )
+
         self.build_tools(['genmap'])
         self.run_genmap()
 
     @pn_pn_2_serial
     def test_PnPn2_Serial(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2'] = 'lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
-        solver_time = self.get_value_from_log(label='total solver time', column=-2)
-        self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=5, label='total solver time')
+        # solver_time = self.get_value_from_log(label='total solver time', column=-2)
+        # self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=5, label='total solver time')
 
         err = self.get_value_from_log(label='err', column=-3, row=-1)
         self.assertAlmostEqualDelayed(err, target_val=8.55641E-10, delta=1e-06, label='err')
@@ -1991,7 +2028,8 @@ class KovStState(NekTestCase):
 
     @pn_pn_2_parallel
     def test_PnPn2_Parallel(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2'] = 'lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=None)
 
@@ -2002,7 +2040,6 @@ class KovStState(NekTestCase):
 
     def tearDown(self):
         self.move_logs()
-
 ####################################################################
 #  lowMach_test; lowMach_test.rea
 ####################################################################
