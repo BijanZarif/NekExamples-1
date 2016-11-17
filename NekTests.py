@@ -2049,6 +2049,41 @@ class LowMachTest(NekTestCase):
     case_name       = 'lowMach_test'
 
     def setUp(self):
+        self.size_params = dict (
+            ldim      = '2',
+            lx1       = '14',
+            lxd       = '20',
+            lx2       = 'lx1-0',
+            lx1m      = '1',
+            lelg      = '5000',
+            lp        = '1024',
+            lelt      = '600',
+            ldimt     = '1',
+            lelx      = '1',
+            lely      = '1',
+            lelz      = '1',
+            ax1       = '1',
+            ax2       = '1',
+            lbx1      = '1',
+            lbx2      = '1',
+            lbelt     = '1',
+            lpx1      = '1',
+            lpx2      = '1',
+            lpelt     = '1',
+            lpert     = '1',
+            lelecmt   = '',
+            toteq     = '1',
+            mxprev    = '20',
+            lgmres    = '30',
+            lorder    = '3',
+            lhis      = '100',
+            maxobj    = '4',
+            maxmbr    = 'lelt*6',
+            nsessmax  = '1',
+            nmaxl     = '1',
+            nfldmax   = '1',
+            nmaxcom   = '1',
+        )
         self.build_tools(['genmap'])
 
         # Tweak the .rea file and run genmap
@@ -2063,12 +2098,13 @@ class LowMachTest(NekTestCase):
 
     @pn_pn_serial
     def test_PnPn_Serial(self):
-        self.config_size(lx2='lx1', ly2='ly1', lz2='lz1')
+        self.size_params['lx2'] = 'lx1'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=200)
 
-        solver_time = self.get_value_from_log(label='total solver time', column=-2)
-        self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=40, label='total solver time')
+        # solver_time = self.get_value_from_log(label='total solver time', column=-2)
+        # self.assertAlmostEqualDelayed(solver_time, target_val=0.1, delta=40, label='total solver time')
 
         gmres = self.get_value_from_log(label='gmres', column=-7)
         self.assertAlmostEqualDelayed(gmres, target_val=0, delta=100, label='gmres')
@@ -2086,7 +2122,8 @@ class LowMachTest(NekTestCase):
 
     @pn_pn_parallel
     def test_PnPn_Parallel(self):
-        self.config_size(lx2='lx1', ly2='ly1', lz2='lz1')
+        self.size_params['lx2'] = 'lx1'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=200)
 
@@ -2106,22 +2143,24 @@ class LowMachTest(NekTestCase):
 
     @pn_pn_2_serial
     def test_PnPn2_Serial(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2'] = 'lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=200)
 
-        phrase = self.get_phrase_from_log("ABORT: For lowMach")
-        self.assertIsNotNullDelayed(phrase, label='ABORT: ')
+        phrase = self.get_phrase_from_log("ABORT")
+        self.assertIsNotNullDelayed(phrase, label='ABORT')
         self.assertDelayedFailures()
 
     @pn_pn_2_parallel
     def test_PnPn2_Parallel(self):
-        self.config_size(lx2='lx1-2', ly2='ly1-2', lz2='lz1')
+        self.size_params['lx2'] = 'lx1-2'
+        self.config_size()
         self.build_nek()
         self.run_nek(step_limit=200)
 
-        phrase = self.get_phrase_from_log("ABORT: For lowMach")
-        self.assertIsNotNullDelayed(phrase, label='ABORT: ')
+        phrase = self.get_phrase_from_log("ABORT")
+        self.assertIsNotNullDelayed(phrase, label='ABORT')
         self.assertDelayedFailures()
 
     def tearDown(self):
