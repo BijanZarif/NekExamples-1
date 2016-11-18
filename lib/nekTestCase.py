@@ -241,7 +241,7 @@ class NekTestCase(unittest.TestCase):
         # Default destination of makenek
         # ------------------------------
         if not self.makenek:
-            self.makenek   = os.path.join(self.source_root, 'core', 'makenek')
+            self.makenek   = os.path.join(self.source_root, 'makenek')
 
         print("Finished getting setup options!")
 
